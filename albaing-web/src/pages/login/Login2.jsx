@@ -50,7 +50,7 @@ export default function Login2() {
 
             // 로그인 성공 후, 역할에 맞는 대시보드로 이동
             if (tab === "company") {
-                navigate("/company/dashboard");
+                navigate("/company");
             } else {
                 navigate("/user/dashboard");
             }

@@ -15,8 +15,8 @@ root.render(
             <Routes>
                 <Route path="/login" element={<Login2 />} />
                 <Route path="/company" element={<CompanyMain />} />
-                <Route path="company/jobposts" element={<JobPostList />} />
-                <Route path="company/jobpost/:jobPostId" element={<JobPostDetail />} />
+                <Route path="/company/jobposts" element={<JobPostList />} />
+                <Route path="/company/jobpost/:jobPostId" element={<JobPostDetail />} />
             </Routes>
         </Router>
     </React.StrictMode>

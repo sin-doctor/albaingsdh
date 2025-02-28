@@ -13,15 +13,13 @@ export default function Login2() {
         setError(""); // 에러 초기화
 
         try {
-            // 선택된 탭에 따라 다른 엔드포인트로 요청
-            const endpoint = tab === "user"
-                ? "/api/account/auth/login-person"
-                : "/api/account/auth/login-company";
+            const endpoint =
+                tab === "user" ? "/api/account/auth/login-person" : "/api/account/auth/login-company";
 
-            // 요청 본문 준비 (서버 모델에 맞춰 필드명 변경)
-            const requestBody = tab === "user"
-                ? { userEmail: email, userPassword: password }
-                : { companyEmail: email, companyPassword: password };
+            const requestBody =
+                tab === "user"
+                    ? { userEmail: email, userPassword: password }
+                    : { companyEmail: email, companyPassword: password };
 
             console.log("요청 엔드포인트:", endpoint);
             console.log("요청 본문:", requestBody);
@@ -32,15 +30,19 @@ export default function Login2() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(requestBody),
-                credentials: "include",
+                credentials: "include", // 세션 쿠키 포함
             });
 
             console.log("응답 상태:", response.status);
 
-            const responseText = await response.text();
-            console.log("응답 데이터:", responseText);
+            const contentType = response.headers.get("content-type");
 
-            const responseData = responseText ? JSON.parse(responseText) : {};
+            let responseData = {};
+            if (contentType && contentType.includes("application/json")) {
+                responseData = await response.json();
+            } else {
+                throw new Error("서버 응답이 JSON 형식이 아닙니다.");
+            }
 
             if (!response.ok) {
                 throw new Error(responseData.message || "로그인 실패. 이메일 또는 비밀번호를 확인하세요.");
@@ -48,7 +50,7 @@ export default function Login2() {
 
             console.log("로그인 성공:", responseData);
 
-            // 로그인 성공 후, 역할에 맞는 대시보드로 이동
+            // 세션을 유지한 상태로 대시보드로 이동
             if (tab === "company") {
                 navigate("/company");
             } else {
